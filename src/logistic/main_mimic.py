@@ -86,7 +86,7 @@ def main():
     prediction_pipeline = Pipeline(step_list)
     
 #     classifier = GridSearchCV(logistic, hyperparameters, cv=5, verbose=10, scoring = roc_auc_scorer)  
-    classifier = GridSearchCV(prediction_pipeline, param_grid, cv=5, verbose=10, scoring = roc_auc_scorer)  
+    classifier = GridSearchCV(prediction_pipeline, param_grid, cv=10, verbose=10, scoring = roc_auc_scorer)  
     t1=time.time()
     best_logistic = classifier.fit(X_train, y_train)
     
