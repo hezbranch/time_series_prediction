@@ -1,4 +1,4 @@
-# split_dataset.py
+# split_dataset_group_k_fold.py
 
 # Input:  --input: (required) a time-series file with one or more columns of
 #              role 'id'
@@ -19,11 +19,10 @@ import os
 import numpy as np
 import copy
 
-from sklearn.model_selection import GroupShuffleSplit
-from sklearn.model_selection import StratifiedKFold # IMPORTED FROM SKLEARN
+from sklearn.model_selection import GroupKFold
 
 class Splitter:
-    def __init__(self, n_splits=1, size=0, random_state=0, cols_to_group=None):
+    def __init__(self, n_splits, size=0, random_state=0, cols_to_group=None):
         self.n_splits = n_splits
         self.size = size
         self.cols_to_group = cols_to_group
@@ -37,30 +36,23 @@ class Splitter:
         grp = [' '.join(row) for row in grp.astype(str).values]
         return grp
 
-    def split(self, X, y=None, groups=None):
-        gss1 = GroupShuffleSplit(random_state=copy.deepcopy(self.random_state), test_size=self.size, n_splits=self.n_splits)
-        for tr_inds, te_inds in gss1.split(X, y=y, groups=groups):
+    def split(self, X, y, groups=None):
+        gkf1 = GroupKFold(n_splits=self.n_splits)
+        for tr_inds, te_inds in gkf1.split(X, y=y, groups=groups):
             yield tr_inds, te_inds
-    
-    # ADDING THIS SKFSPLIT FUNCTION BELOW
-    def SKFsplit(self, X, y=None, groups=None):
-        skf = StratifiedKFold(random_state=copy.deepcopy(self.random_state), n_splits=self.n_splits, shuffle=True)
-        for tr_inds_skf, te_inds_skf in skf.split(X, y=y):
-            yield tr_inds_skf1, te_inds_skf1
 
     def get_n_splits(self, X, y=None, groups=None):
         return self.n_splits
 
-# EDITING THE LINES BELOW TO TEST EXPERIMENT WITH STRATIFIED K FOLD
-# TESTING SPLITS FROM 5 to 20
-# WILL NEED TO COMPARE TO RANDOM CROSS VALIDATION AS PER BELOW SOURCE
-# https://online.stat.psu.edu/stat508/lesson/2/2.2
+# EXPERIMENT WITH RANDOM GROUP K FOLD
+# TESTING SPLITS FROM 5 to 20, SPLIT MUST BE
+# LESS THAN OR EQUAL TO NUMBER OF DISTINCT GROUPS
+# WILL NEED TO COMPARE TO RANDOM CROSS VALIDATION
 def split_dataframe_by_keys(data_df=None, size=0, random_state=0, cols_to_group=None):
-    gss1 = Splitter(n_splits=1, size=size, random_state=random_state, cols_to_group=cols_to_group)
     # ADDING THE LINE OF CODE BELOW (HEZEKIAH)
-    skf1 = Splitter(n_splits=5, size=size, random_state=random_state, cols_to_group=cols_to_group)
+    gkf1 = Splitter(n_splits=10, size=size, cols_to_group=cols_to_group)
     # >> for a, b in gss1.split(df, groups=gss1.make_groups_from_df(data_df)):
-    for a, b in gss1.split(df, groups=gss1.make_groups_from_df(data_df)):
+    for a, b in gkf1.split(df, df["subject_id"], groups=gkf1.make_groups_from_df(data_df)):
         train_df = df.iloc[a].copy()
         test_df = df.iloc[b].copy()
     return train_df, test_df
@@ -71,7 +63,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--input', required=True)
     parser.add_argument('--data_dict', required=True)
-    parser.add_argument('--test_size', required=True, type=float)
+    parser.add_argument('--test_size', required=False, type=float)
     parser.add_argument('--output_dir', default=None)
     parser.add_argument('--train_csv_filename', default='train.csv')
     parser.add_argument('--test_csv_filename', default='test.csv')
@@ -114,4 +106,6 @@ if __name__ == '__main__':
     if args.output_data_dict_filename is not None:
         with open(args.output_data_dict_filename, 'w') as f:
             json.dump(data_dict, f, indent=4)
+
+
 
