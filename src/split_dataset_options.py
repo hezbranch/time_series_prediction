@@ -19,8 +19,9 @@ import os
 import numpy as np
 import copy
 
-from sklearn.model_selection import StratifiedKFold
 from sklearn.model_selection import KFold
+from sklearn.model_selection import StratifiedKFold
+from sklearn.model_selection import GroupShuffleSplit
 
 
 class Splitter:
@@ -43,9 +44,11 @@ class Splitter:
         if (self.splitter_type == "group_split"):
             gss1 = GroupShuffleSplit(random_state=copy.deepcopy(self.random_state), test_size=self.size, n_splits=self.n_splits)
         elif (self.splitter_type == "stratified_split"):
-            gss1 = StratifiedKFold(n_splits=self.n_splits, random_state=copy.deepcopy(self.random_state), shuffle=True)
+            gss1 = StratifiedKFold(n_splits=self.n_splits)
         elif (self.splitter_type == "naive_split"):
             gss1 = KFold(n_splits=self.n_splits, random_state=copy.deepcopy(self.random_state), shuffle=True)
+        else:
+            gss1 = GroupShuffleSplit(random_state=copy.deepcopy(self.random_state), test_size=self.size, n_splits=self.n_splits)
             
         # Sanity check add print statements to check the first five rows
         for tr_inds, te_inds in gss1.split(X, y=y, groups=groups):
@@ -57,9 +60,9 @@ class Splitter:
 # EXPERIMENT WITH STRATIFIED K FOLD
 # TESTING SPLITS FROM 5 to 20, SPLIT MUST EXCEED 1 FOR K FOLD
 # WILL NEED TO COMPARE TO RANDOM CROSS VALIDATION
-def split_dataframe_by_keys(data_df=None, size=0, random_state=0, cols_to_group=None):
+def split_dataframe_by_keys(data_df=None, size=0, random_state=0, cols_to_group=None, splitter_type=""):
     # ADDING THE LINE OF CODE BELOW (HEZEKIAH)
-    kfold_split = Splitter(n_splits=5, size=size, choice=0, cols_to_group=cols_to_group)
+    kfold_split = Splitter(n_splits=5, size=size, cols_to_group=cols_to_group, splitter_type=splitter_type)
     # >> for a, b in gss1.split(df, groups=gss1.make_groups_from_df(data_df)):
     for a, b in kfold_split.split(df, df['subject_id'], groups=kfold_split.make_groups_from_df(data_df)):
         train_df = df.iloc[a].copy()

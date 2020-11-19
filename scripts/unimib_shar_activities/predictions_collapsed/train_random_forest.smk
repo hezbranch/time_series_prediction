@@ -20,7 +20,7 @@ rule all:
 
 rule train_and_evaluate_classifier:
     input:
-        script=os.path.join(PROJECT_REPO_DIR, 'src', 'eval_classifier.py'),
+        script=os.path.join(PROJECT_REPO_DIR, 'src', 'eval_classifier_copy.py'),
         python_src_files=glob.glob(os.path.join(PROJECT_REPO_DIR, 'src', '*.py')),
         hyperparam_config_files=glob.glob(os.path.join(PROJECT_REPO_DIR, 'src', 'default_hyperparameters', '*.json')),
         x_train_csv=os.path.join(DATASET_SPLIT_PATH, 'x_train.csv'),
@@ -50,6 +50,7 @@ rule train_and_evaluate_classifier:
             --n_splits 3 \
             --validation_size 0.1 \
             --scoring roc_auc \
+	    --splitter_type naive_split \
             --threshold_scoring balanced_accuracy \
             --class_weight balanced \
         '''\

@@ -20,7 +20,7 @@ rule all:
 
 rule train_and_evaluate_classifier:
     input:
-        script=os.path.join(PROJECT_REPO_DIR, 'src', 'eval_classifier.py'),
+        script=os.path.join(PROJECT_REPO_DIR, 'src', 'eval_classifier_copy.py'),
         python_src_files=glob.glob(os.path.join(PROJECT_REPO_DIR, 'src', '*.py')),
         x_train_csv=os.path.join(DATASET_SPLIT_PATH, 'x_train.csv'),
         x_test_csv=os.path.join(DATASET_SPLIT_PATH, 'x_test.csv'),
@@ -48,6 +48,7 @@ rule train_and_evaluate_classifier:
             --key_cols_to_group_when_splitting {{SPLIT_KEY_COL_NAMES}} \
             --n_splits 3 \
             --validation_size 0.1 \
+	    --splitter_type stratified_split \
             --scoring roc_auc \
             --threshold_scoring balanced_accuracy \
             --class_weight balanced \

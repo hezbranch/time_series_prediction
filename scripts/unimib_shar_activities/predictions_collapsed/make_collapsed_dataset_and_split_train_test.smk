@@ -55,7 +55,7 @@ rule collapse_features:
 
 rule split_into_train_and_test:
     input:
-        script=os.path.join(PROJECT_REPO_DIR, 'src', 'split_dataset_stratified.py'),
+        script=os.path.join(PROJECT_REPO_DIR, 'src', 'split_dataset_options.py'),
         collapsedx_csv=os.path.join(DATASET_STD_PATH, 'features_per_sequence.csv'),
         collapsedx_json=os.path.join(DATASET_STD_PATH, 'Spec_CollapsedFeaturesPerSequence.json'),
         collapsedy_csv=os.path.join(DATASET_STD_PATH, 'outcomes_per_sequence.csv'),

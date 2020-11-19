@@ -46,7 +46,7 @@ from sklearn.metrics import (accuracy_score, balanced_accuracy_score, f1_score,
                              roc_auc_score, roc_curve, precision_recall_curve)
 from sklearn.model_selection import GridSearchCV, ShuffleSplit
 
-from split_dataset import Splitter
+from split_dataset_options import Splitter
 from utils_scoring import (THRESHOLD_SCORING_OPTIONS, calc_score_for_binary_predictions)
 from utils_calibration import plot_binary_clf_calibration_curve_and_histograms
 
