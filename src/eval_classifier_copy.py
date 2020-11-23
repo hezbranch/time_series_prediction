@@ -325,7 +325,7 @@ if __name__ == '__main__':
         # Make sure all candidates at least provide
         # one instance of each class (positive and negative)
         yproba_class1_vals = list()
-        for tr_inds, va_inds in splitter.split(x_train, groups=key_train):
+        for tr_inds, va_inds in splitter.split(x_train,y_train, groups=key_train):
             x_valid = x_train[va_inds]
             yproba_valid = hyper_searcher.best_estimator_.predict_proba(x_valid)[:,1]
             yproba_class1_vals.extend(yproba_valid)

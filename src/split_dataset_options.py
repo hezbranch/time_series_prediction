@@ -44,7 +44,7 @@ class Splitter:
         if (self.splitter_type == "group_split"):
             gss1 = GroupShuffleSplit(random_state=copy.deepcopy(self.random_state), test_size=self.size, n_splits=self.n_splits)
         elif (self.splitter_type == "stratified_split"):
-            gss1 = StratifiedKFold(n_splits=self.n_splits)
+            gss1 = StratifiedKFold(n_splits=self.n_splits, random_state=copy.deepcopy(self.random_state), shuffle=True)
         elif (self.splitter_type == "naive_split"):
             gss1 = KFold(n_splits=self.n_splits, random_state=copy.deepcopy(self.random_state), shuffle=True)
         else:
@@ -52,6 +52,7 @@ class Splitter:
             
         # Sanity check add print statements to check the first five rows
         for tr_inds, te_inds in gss1.split(X, y=y, groups=groups):
+            print("RESULTS FROM TR INDS & TE INDS SPLIT HERE:")
             yield tr_inds, te_inds
 
     def get_n_splits(self, X, y=None, groups=None):

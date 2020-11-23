@@ -50,7 +50,7 @@ rule train_and_evaluate_classifier:
             --n_splits 3 \
             --validation_size 0.1 \
             --scoring roc_auc \
-	    --splitter_type naive_split \
+	    --splitter_type group_split \
             --threshold_scoring balanced_accuracy \
             --class_weight balanced \
         '''\
