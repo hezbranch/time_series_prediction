@@ -255,6 +255,8 @@ if __name__ == '__main__':
     x_train = df_by_split['train'][feature_cols].values
     y_train = np.ravel(df_by_split['train'][outcome_col_name])
 
+    #x_test = df_by_split['test'][feature_cols].values
+    #y_test = np.ravel(df_by_split['test'][outcome_col_name])
     x_test = df_by_split['test'][feature_cols].values
     y_test = np.ravel(df_by_split['test'][outcome_col_name])
 
@@ -402,8 +404,9 @@ if __name__ == '__main__':
     row_dict_list = list()
     extra_list = list()
     for split_name, x, y in [
-            ('train', x_train, y_train),
-            ('test', x_test, y_test)]:
+            ('train', x_train[:5356], y_train[:5356]),
+            ('test', x_test[:500], y_test[:500])]:
+        #row_dict = dict(split_name=split_name, n_examples=x.shape[0], n_labels_positive=np.sum(y))
         row_dict = dict(split_name=split_name, n_examples=x.shape[0], n_labels_positive=np.sum(y))
         row_dict['frac_labels_positive'] = np.sum(y) / x.shape[0]
 

@@ -53,6 +53,7 @@ class Splitter:
         # Sanity check add print statements to check the first five rows
         for tr_inds, te_inds in gss1.split(X, y=y, groups=groups):
             print("RESULTS FROM TR INDS & TE INDS SPLIT HERE:")
+            print("%s %s" % (tr_inds, te_inds))
             yield tr_inds, te_inds
 
     def get_n_splits(self, X, y=None, groups=None):
@@ -82,6 +83,7 @@ if __name__ == '__main__':
     parser.add_argument('--test_csv_filename', default='test.csv')
     parser.add_argument('--output_data_dict_filename', required=False, type=str, default=None)
     parser.add_argument('--group_cols', nargs='*', default=[None])
+    parser.add_argument('--group_by subject_id', required=False)
     parser.add_argument('--random_state', required=False, type=int, default=20190206)
     args = parser.parse_args()
 
